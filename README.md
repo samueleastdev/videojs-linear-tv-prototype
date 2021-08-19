@@ -1,6 +1,6 @@
 # videojs-linear-tv-prototype
 
-Prototyping a linear TV flow with video js based on current time with moment js
+Prototyping a linear TV flow with video js based on current time with moment
 
 ## Table of Contents
 
