@@ -1,3 +1,4 @@
+import moment from 'moment';
 import videojs from 'video.js';
 import { version as VERSION } from '../package.json';
 
@@ -13,7 +14,7 @@ const defaults = {};
  */
 class LinearTvPrototype extends Plugin {
 
-    /**
+  /**
      * Create a LinearTvPrototype plugin instance.
      *
      * @param  {Player} player
@@ -26,157 +27,158 @@ class LinearTvPrototype extends Plugin {
      *         second argument of options is a convenient way to accept inputs
      *         from your plugin's caller.
      */
-    constructor(player, options) {
-        // the parent class will add player under this.player
-        super(player);
+  constructor(player, options) {
+    // the parent class will add player under this.player
+    super(player);
 
-        this.options = videojs.mergeOptions(defaults, options);
+    this.options = videojs.mergeOptions(defaults, options);
 
-        this.player.ready(() => {
-            this.player.addClass('vjs-linear-tv-prototype');
-        });
+    this.player.ready(() => {
+      this.player.addClass('vjs-linear-tv-prototype');
+    });
 
-        this.startWatching();
+    this.moment = moment();
 
-        this.renderPrograms();
+    this.startWatching();
+
+    this.renderGuide();
+
+  }
+
+  startWatching() {
+
+    let setMedia; let seekTime; let seekMore;
+    const guide = this.options.programs;
+    const adverts = this.options.adverts;
+    const player = this.player;
+
+    // Get media for the current hour if it is set and also check the time in seconds
+    setMedia = guide.filter(media => (moment().unix().between(media.start, media.end)));
+
+    if (setMedia.length > 0) {
+
+      player.src(setMedia[0].media);
+
+      player.one('play', function(_event) {
+
+        this.currentTime(moment().unix() - setMedia[0].start);
+
+      });
+
+    } else {
+
+      // console.log('No video at this time add slate');
+
+      player.src(adverts.media);
+
+      player.play();
 
     }
 
-    startWatching() {
+    player.on('ended', function(_event) {
 
+      this.currentTime(0);
 
-        var set_media, seek_time, seek_more;
-        var programs = this.options.programs;
-        var adverts = this.options.adverts;
-        var player = this.player;
+      this.play();
 
-        // Get media for the current hour if it is set and also check the time in seconds
-        set_media = programs.filter(programs => (moment().unix().between(programs.start, programs.end)));
+    });
 
-        if (set_media.length > 0) {
+    /* this.dom.getElementById("skip_current").addEventListener('click', function() {
 
-            player.src(set_media[0].media);
+            player.currentTime(moment().unix() - setMedia[0].start);
 
-            player.one("play", function(_event) {
+        });*/
 
-                this.currentTime(moment().unix() - set_media[0].start);
+    player.on('timeupdate', function(_event) {
 
-            });
+      if (setMedia.length > 0) {
+
+        if (moment().unix().between_equals(setMedia[0].start, setMedia[0].end)) {
+
+          // Still in current media time
 
         } else {
 
-            console.log('No video at this time add slate');
+          // Media ended switch
+          const updateMedia = guide.filter(media => moment().unix().between_equals(media.start, media.end));
 
-            player.src(adverts.media);
+          if (updateMedia.length > 0) {
 
-            player.play();
-
-        }
-
-        player.on("ended", function(_event) {
-
-            this.currentTime(0)
+            this.src(updateMedia[0].media);
 
             this.play();
 
-        });
+            setMedia[0] = updateMedia[0];
 
-        document.getElementById("skip_current").addEventListener('click', function() {
+          } else {
 
-            player.currentTime(moment().unix() - set_media[0].start);
+            // console.log('No video at this time add slate');
 
-        });
+          }
 
-        player.on("timeupdate", function(_event) {
+        }
 
-            if (set_media.length > 0) {
+      } else {
 
-                if (moment().unix().between_equals(set_media[0].start, set_media[0].end)) {
+        setMedia = guide.filter(media => (moment().unix().between(media.start, media.end)));
 
-                    // Still in current media time
+        if (setMedia.length > 0) {
 
-                } else {
+          this.src(setMedia[0].media);
 
-                    // Media ended switch
-                    const update_media = programs.filter(programs => moment().unix().between_equals(programs.start, programs.end));
+          this.play();
 
-                    if (update_media.length > 0) {
+        } else {
 
-                        this.src(update_media[0].media);
+          // console.log('fallback needed');
 
-                        this.play();
+        }
 
-                        set_media[0] = update_media[0];
+      }
 
-                    } else {
+    });
 
-                        console.log('No video at this time add slate');
+    player.on('seeking', function(event) {
 
-                    }
+      if (setMedia.length > 0) {
 
-                }
+        seekTime = this.currentTime();
 
-            } else {
+        seekMore = moment().unix() - setMedia[0].start;
 
-                set_media = programs.filter(programs => (moment().unix().between(programs.start, programs.end)));
+        if (seekTime > seekMore) {
 
-                if (set_media.length > 0) {
+          this.currentTime(seekMore);
 
-                    this.src(set_media[0].media);
+        }
 
-                    this.play();
+      }
 
-                } else {
+    });
 
-                    console.log('fallback needed');
+    player.on('seeked', function(event) {
 
-                }
+      if (setMedia.length > 0) {
 
-            }
+        seekTime = this.currentTime();
 
-        });
+        seekMore = moment().unix() - setMedia[0].start;
 
-        player.on("seeking", function(event) {
+        if (seekTime > seekMore) {
 
-            if (set_media.length > 0) {
+          this.currentTime(seekMore);
 
-                seek_time = this.currentTime();
+        }
 
-                seek_more = moment().unix() - set_media[0].start;
+      }
 
-                if (seek_time > seek_more) {
+    });
 
-                    this.currentTime(seek_more);
+  }
 
-                }
+  renderGuide() {
 
-            }
-
-        });
-
-        player.on("seeked", function(event) {
-
-            if (set_media.length > 0) {
-
-                seek_time = this.currentTime();
-
-                seek_more = moment().unix() - set_media[0].start;
-
-                if (seek_time > seek_more) {
-
-                    this.currentTime(seek_more);
-
-                }
-
-            }
-
-        });
-
-    }
-
-    renderPrograms() {
-
-        var programs = this.options.programs;
+    /* var programs = this.options.programs;
 
         var progs = '<ul>';
 
@@ -188,10 +190,10 @@ class LinearTvPrototype extends Plugin {
 
         progs += '<ul>';
 
-        document.getElementById('programmes').innerHTML = progs;
+        this.dom.getElementById('programmes').innerHTML = progs;
+        */
 
-    }
-
+  }
 
 }
 
