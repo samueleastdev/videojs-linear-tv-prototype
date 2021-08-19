@@ -5,7 +5,10 @@ import { version as VERSION } from '../package.json';
 const Plugin = videojs.getPlugin('plugin');
 
 // Default options for the plugin.
-const defaults = {};
+const defaults = {
+  programs: [],
+  adverts: []
+};
 
 /**
  * An advanced Video.js plugin. For more information on the API
