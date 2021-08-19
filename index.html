@@ -1,27 +1,93 @@
 <!doctype html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <title>videojs-linear-tv-prototype Demo</title>
-  <link href="node_modules/video.js/dist/video-js.css" rel="stylesheet">
-  <link href="dist/videojs-linear-tv-prototype.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>videojs-linear-tv-prototype Demo</title>
+    <link href="node_modules/video.js/dist/video-js.css" rel="stylesheet">
+    <link href="dist/videojs-linear-tv-prototype.css" rel="stylesheet">
 </head>
+
 <body>
-  <video id="videojs-linear-tv-prototype-player" class="video-js vjs-default-skin" controls>
-    <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
-    <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
-  </video>
-  <ul>
-    <li><a href="/test/debug.html">Run unit tests in browser.</a></li>
-    <li><a href="docs/api/">Read generated docs.</a></li>
-  </ul>
-  <script src="node_modules/video.js/dist/video.js"></script>
-  <script src="dist/videojs-linear-tv-prototype.js"></script>
-  <script>
-    (function(window, videojs) {
-      var examplePlayer = window.examplePlayer = videojs('videojs-linear-tv-prototype-player');
-      var linearTvPrototype = window.linearTvPrototype = examplePlayer.linearTvPrototype();
-    }(window, window.videojs));
-  </script>
+    <video id="videojs-linear-tv-prototype-player" class="video-js vjs-default-skin" controls>
+        <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
+        <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
+    </video>
+    <button id="skip_current">Skip to now</button>
+    <div id="programmes"></div>
+    <ul>
+        <li><a href="/test/debug.html">Run unit tests in browser.</a></li>
+        <li><a href="docs/api/">Read generated docs.</a></li>
+    </ul>
+    <script src="node_modules/video.js/dist/video.js"></script>
+    <script src="node_modules/moment/moment.js"></script>
+    <script src="dist/videojs-linear-tv-prototype.js"></script>
+    <script>
+        (function(window, videojs) {
+
+            Number.prototype.between = function(a, b) {
+                var min = Math.min.apply(Math, [a, b]),
+                    max = Math.max.apply(Math, [a, b]);
+                return this > min && this < max;
+            };
+            Number.prototype.between_equals = function(a, b) {
+                var min = Math.min.apply(Math, [a, b]),
+                    max = Math.max.apply(Math, [a, b]);
+                return this >= min && this <= max;
+            };
+
+            var programs = [{
+                title: 'Elephants Dream',
+                start: moment(new Date("Aug 19, 2021 20:45:00")).unix(),
+                end: moment(new Date("Aug 19, 2021 21:00:00")).unix(),
+                duration: 7208,
+                media: {
+                    type: "video/mp4",
+                    src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/ElephantsDream.mp4"
+                }
+            }, {
+                title: 'Sintel',
+                start: moment(new Date("Aug 19, 2021 09:49:00")).unix() + 7208,
+                end: moment(new Date("Aug 19, 2021 09:49:00")).unix() + 7208 + 7208,
+                duration: 7208,
+                media: {
+                    type: "video/mp4",
+                    src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/Sintel.mp4"
+                }
+            }, {
+                title: 'Tears Of Steel',
+                start: moment(new Date("Aug 19, 2021 20:01:00")).unix(),
+                end: moment(new Date("Aug 19, 2021 20:01:00")).unix() + 634,
+                duration: 634,
+                media: {
+                    type: "application/dash+xml",
+                    src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/TearsOfSteel.mp4"
+                }
+            }, {
+                title: 'Big BuckBunny',
+                start: moment(new Date("Aug 19, 2021 21:05:00")).unix(),
+                end: moment(new Date("Aug 19, 2021 21:05:00")).unix() + 7208,
+                duration: 7208,
+                media: {
+                    type: "video/mp4",
+                    src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/BigBuckBunny.mp4"
+                }
+            }];
+
+            var adverts = {
+                media: {
+                    type: "video/mp4",
+                    src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/ForBiggerBlazes.mp4"
+                }
+            };
+
+            var examplePlayer = window.examplePlayer = videojs('videojs-linear-tv-prototype-player');
+            var linearTvPrototype = window.linearTvPrototype = examplePlayer.linearTvPrototype({
+                'programs': programs,
+                'adverts': adverts
+            });
+        }(window, window.videojs));
+    </script>
 </body>
+
 </html>
