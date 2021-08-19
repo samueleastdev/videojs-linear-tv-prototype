@@ -1,11 +1,22 @@
 # videojs-linear-tv-prototype
 
-Prototyping a linear TV flow with video js based on current time
+Prototyping a linear TV flow with video js based on current time with moment js
 
 ## Table of Contents
 
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [`<script>` Tag](#script-tag)
+  - [Browserify/CommonJS](#browserifycommonjs)
+  - [RequireJS/AMD](#requirejsamd)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Installation
 
 ```sh
@@ -24,7 +35,7 @@ This is the simplest case. Get the script in whatever way you prefer and include
 <script src="//path/to/video.min.js"></script>
 <script src="//path/to/videojs-linear-tv-prototype.min.js"></script>
 <script>
-  var player = videojs('my-video');
+  var player = videojs("my-video");
 
   player.linearTvPrototype();
 </script>
@@ -35,14 +46,14 @@ This is the simplest case. Get the script in whatever way you prefer and include
 When using with Browserify, install videojs-linear-tv-prototype via npm and `require` the plugin as you would any other module.
 
 ```js
-var videojs = require('video.js');
+var videojs = require("video.js");
 
 // The actual plugin function is exported by this module, but it is also
 // attached to the `Player.prototype`; so, there is no need to assign it
 // to a variable.
-require('videojs-linear-tv-prototype');
+require("videojs-linear-tv-prototype");
 
-var player = videojs('my-video');
+var player = videojs("my-video");
 
 player.linearTvPrototype();
 ```
@@ -52,8 +63,8 @@ player.linearTvPrototype();
 When using with RequireJS (or another AMD library), get the script in whatever way you prefer and `require` the plugin as you normally would:
 
 ```js
-require(['video.js', 'videojs-linear-tv-prototype'], function(videojs) {
-  var player = videojs('my-video');
+require(["video.js", "videojs-linear-tv-prototype"], function (videojs) {
+  var player = videojs("my-video");
 
   player.linearTvPrototype();
 });
@@ -62,6 +73,5 @@ require(['video.js', 'videojs-linear-tv-prototype'], function(videojs) {
 ## License
 
 Apache-2.0. Copyright (c) Samuel East
-
 
 [videojs]: http://videojs.com/
