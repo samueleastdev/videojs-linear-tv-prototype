@@ -37,7 +37,60 @@ This is the simplest case. Get the script in whatever way you prefer and include
 <script>
   var player = videojs("my-video");
 
-  player.linearTvPrototype();
+  var programs = [
+    {
+      title: "Elephants Dream",
+      start: moment(new Date("Aug 19, 2021 21:25:00")).unix(),
+      end: moment(new Date("Aug 19, 2021 22:00:00")).unix(),
+      duration: 7208,
+      media: {
+        type: "video/mp4",
+        src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/ElephantsDream.mp4",
+      },
+    },
+    {
+      title: "Sintel",
+      start: moment(new Date("Aug 19, 2021 09:49:00")).unix() + 7208,
+      end: moment(new Date("Aug 19, 2021 09:49:00")).unix() + 7208 + 7208,
+      duration: 7208,
+      media: {
+        type: "video/mp4",
+        src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/Sintel.mp4",
+      },
+    },
+    {
+      title: "Tears Of Steel",
+      start: moment(new Date("Aug 19, 2021 20:01:00")).unix(),
+      end: moment(new Date("Aug 19, 2021 20:01:00")).unix() + 634,
+      duration: 634,
+      media: {
+        type: "application/dash+xml",
+        src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/TearsOfSteel.mp4",
+      },
+    },
+    {
+      title: "Big BuckBunny",
+      start: moment(new Date("Aug 19, 2021 21:05:00")).unix(),
+      end: moment(new Date("Aug 19, 2021 21:05:00")).unix() + 7208,
+      duration: 7208,
+      media: {
+        type: "video/mp4",
+        src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/BigBuckBunny.mp4",
+      },
+    },
+  ];
+
+  var adverts = {
+    media: {
+      type: "video/mp4",
+      src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/ForBiggerBlazes.mp4",
+    },
+  };
+
+  player.linearTvPrototype({
+    programs: programs,
+    adverts: adverts,
+  });
 </script>
 ```
 
