@@ -56,7 +56,7 @@ class LinearTvPrototype extends Plugin {
     const player = this.player;
 
     // Get media for the current hour if it is set and also check the time in seconds
-    setMedia = guide.filter(media => (moment().unix().between(media.start, media.end)));
+    setMedia = guide.filter(media => (this.moment.unix().between(media.start, media.end)));
 
     if (setMedia.length > 0) {
 
@@ -64,7 +64,7 @@ class LinearTvPrototype extends Plugin {
 
       player.one('play', function(_event) {
 
-        this.currentTime(moment().unix() - setMedia[0].start);
+        this.currentTime(this.moment.unix() - setMedia[0].start);
 
       });
 
@@ -88,7 +88,7 @@ class LinearTvPrototype extends Plugin {
 
     /* this.dom.getElementById("skip_current").addEventListener('click', function() {
 
-            player.currentTime(moment().unix() - setMedia[0].start);
+            player.currentTime(this.moment.unix() - setMedia[0].start);
 
         });*/
 
@@ -96,14 +96,14 @@ class LinearTvPrototype extends Plugin {
 
       if (setMedia.length > 0) {
 
-        if (moment().unix().between_equals(setMedia[0].start, setMedia[0].end)) {
+        if (this.moment.unix().between_equals(setMedia[0].start, setMedia[0].end)) {
 
           // Still in current media time
 
         } else {
 
           // Media ended switch
-          const updateMedia = guide.filter(media => moment().unix().between_equals(media.start, media.end));
+          const updateMedia = guide.filter(media => this.moment.unix().between_equals(media.start, media.end));
 
           if (updateMedia.length > 0) {
 
@@ -123,7 +123,7 @@ class LinearTvPrototype extends Plugin {
 
       } else {
 
-        setMedia = guide.filter(media => (moment().unix().between(media.start, media.end)));
+        setMedia = guide.filter(media => (this.moment.unix().between(media.start, media.end)));
 
         if (setMedia.length > 0) {
 
@@ -147,7 +147,7 @@ class LinearTvPrototype extends Plugin {
 
         seekTime = this.currentTime();
 
-        seekMore = moment().unix() - setMedia[0].start;
+        seekMore = this.moment.unix() - setMedia[0].start;
 
         if (seekTime > seekMore) {
 
@@ -165,7 +165,7 @@ class LinearTvPrototype extends Plugin {
 
         seekTime = this.currentTime();
 
-        seekMore = moment().unix() - setMedia[0].start;
+        seekMore = this.moment.unix() - setMedia[0].start;
 
         if (seekTime > seekMore) {
 
