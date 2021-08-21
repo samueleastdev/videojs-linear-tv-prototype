@@ -4,6 +4,8 @@ import { version as VERSION } from '../package.json';
 
 const Plugin = videojs.getPlugin('plugin');
 
+const Button = videojs.getComponent('Button');
+
 // Default options for the plugin.
 const defaults = {
   programs: [],
@@ -40,100 +42,80 @@ class LinearTvPrototype extends Plugin {
       this.player.addClass('vjs-linear-tv-prototype');
     });
 
+    this.player.programs = this.options.programs;
+
     this.moment = moment();
 
     this.startWatching();
 
-    this.renderGuide();
+    this.addSkipButton();
 
+  }
+
+  addSkipButton() {
+
+    const that = this;
+
+    const skipButton = videojs.extend(Button, {
+      constructor() {
+
+        Button.apply(this, arguments);
+
+        this.addClass('vjs-skip-button');
+
+      },
+      createEl() {
+
+        return videojs.dom.createEl('button', {
+          className: 'vjs-custom-button vjs-control  vjs-button',
+          innerHTML: '<span aria-hidden="true" class="vjs-icon-placeholder"></span><span class="vjs-control-text" aria-live="polite">Fullscreen</span> Go Live',
+          role: 'button',
+          'aria-live': 'polite',
+          tabIndex: 0
+
+        });
+
+      },
+      handleClick() {
+
+        if (that.currentTrack.length > 0) {
+          that.player.currentTime(moment().unix() - that.currentTrack[0].start);
+
+        }
+
+      }
+    });
+
+    videojs.registerComponent('skipButton', skipButton);
+
+    this.player.getChild('controlBar').addChild('skipButton', {});
   }
 
   startWatching() {
 
-    let setMedia; let seekTime; let seekMore;
-    const guide = this.options.programs;
-    const adverts = this.options.adverts;
-    const player = this.player;
+    let seekTime; let seekMore;
+    const that = this;
+    this.currentTrack = [];
 
-    // Get media for the current hour if it is set and also check the time in seconds
-    setMedia = guide.filter(media => (moment().unix().between(media.start, media.end)));
+    this.getTrack();
 
-    if (setMedia.length > 0) {
+    this.player.on('ended', function (_event) {
 
-      player.src(setMedia[0].media);
-
-      player.one('play', function(_event) {
-
-        this.currentTime(moment().unix() - setMedia[0].start);
-
-      });
-
-    } else {
-
-      // console.log('No video at this time add slate');
-
-      player.src(adverts.media);
-
-      player.play();
-
-    }
-
-    player.on('ended', function(_event) {
-
-      this.currentTime(0);
-
-      this.play();
+      that.getTrack();
 
     });
 
-    /* this.dom.getElementById("skip_current").addEventListener('click', function() {
+    this.player.on('timeupdate', function (_event) {
 
-            player.currentTime(moment().unix() - setMedia[0].start);
+      if (that.currentTrack.length > 0) {
 
-        });*/
-
-    player.on('timeupdate', function(_event) {
-
-      if (setMedia.length > 0) {
-
-        if (moment().unix().between_equals(setMedia[0].start, setMedia[0].end)) {
+        if (moment().unix().between_equals(that.currentTrack[0].start, that.currentTrack[0].end)) {
 
           // Still in current media time
 
         } else {
 
-          // Media ended switch
-          const updateMedia = guide.filter(media => moment().unix().between_equals(media.start, media.end));
-
-          if (updateMedia.length > 0) {
-
-            this.src(updateMedia[0].media);
-
-            this.play();
-
-            setMedia[0] = updateMedia[0];
-
-          } else {
-
-            // console.log('No video at this time add slate');
-
-          }
-
-        }
-
-      } else {
-
-        setMedia = guide.filter(media => (moment().unix().between(media.start, media.end)));
-
-        if (setMedia.length > 0) {
-
-          this.src(setMedia[0].media);
-
-          this.play();
-
-        } else {
-
-          // console.log('fallback needed');
+          that.updateTrack();
 
         }
 
@@ -141,13 +123,13 @@ class LinearTvPrototype extends Plugin {
 
     });
 
-    player.on('seeking', function(event) {
+    this.player.on('seeking', function (event) {
 
-      if (setMedia.length > 0) {
+      if (that.currentTrack.length > 0) {
 
         seekTime = this.currentTime();
 
-        seekMore = moment().unix() - setMedia[0].start;
+        seekMore = moment().unix() - that.currentTrack[0].start;
 
         if (seekTime > seekMore) {
 
@@ -159,13 +141,13 @@ class LinearTvPrototype extends Plugin {
 
     });
 
-    player.on('seeked', function(event) {
+    this.player.on('seeked', function (event) {
 
-      if (setMedia.length > 0) {
+      if (that.currentTrack.length > 0) {
 
         seekTime = this.currentTime();
 
-        seekMore = moment().unix() - setMedia[0].start;
+        seekMore = moment().unix() - that.currentTrack[0].start;
 
         if (seekTime > seekMore) {
 
@@ -179,22 +161,63 @@ class LinearTvPrototype extends Plugin {
 
   }
 
-  renderGuide() {
+  getTrack() {
 
-    /* var programs = this.options.programs;
+    const programs = this.options.programs;
 
-        var progs = '<ul>';
+    const adverts = this.options.adverts;
 
-        programs.forEach(function(element) {
+    this.currentTrack = programs.filter(media => (moment().unix().between(media.start, media.end)));
 
-            progs += '<li>Title: ' + element.title + ', Start: ' + moment.unix(element.start).format("MM/DD/YYYY HH:mm:ss") + ', End: ' + moment.unix(element.end).format("MM/DD/YYYY HH:mm:ss") + '</li>';
+    if (this.currentTrack.length > 0) {
 
-        });
+      this.player.src(this.currentTrack[0].media);
 
-        progs += '<ul>';
+      this.player.currentTime(moment().unix() - this.currentTrack[0].start);
 
-        this.dom.getElementById('programmes').innerHTML = progs;
-        */
+      this.player.play();
+
+    } else {
+
+      this.player.src(adverts.media);
+
+      this.player.play();
+
+    }
+
+  }
+
+  updateTrack() {
+
+    const programs = this.options.programs;
+
+    const adverts = this.options.adverts;
+
+    this.currentTrack = programs.filter(media => (moment().unix().between_equals(media.start, media.end)));
+
+    if (this.currentTrack.length > 0) {
+
+      this.player.src(this.currentTrack[0].media);
+
+      this.player.currentTime(moment().unix() - this.currentTrack[0].start);
+
+      this.player.play();
+
+    } else {
+
+      this.player.src(adverts.media);
+
+      this.player.play();
+
+    }
+
+  }
+
+  updateGuide(data) {
+
+    this.options.programs = data;
+
+    this.updateTrack();
 
   }
 

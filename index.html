@@ -6,20 +6,92 @@
     <title>videojs-linear-tv-prototype Demo</title>
     <link href="node_modules/video.js/dist/video-js.css" rel="stylesheet">
     <link href="dist/videojs-linear-tv-prototype.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 
 <body>
-    <video id="videojs-linear-tv-prototype-player" class="video-js vjs-default-skin" controls>
-        <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
-        <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
-    </video>
-    <button id="skip_current">Skip to now</button>
-    <div id="programmes"></div>
+
+    <header>
+        <div class="collapse bg-dark" id="navbarHeader">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-8 col-md-7 py-4">
+                <h4 class="text-white">About</h4>
+                <p class="text-muted">Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link them off to some social networking sites or contact information.</p>
+              </div>
+              <div class="col-sm-4 offset-md-1 py-4">
+                <h4 class="text-white">Contact</h4>
+                <ul class="list-unstyled">
+                  <li><a href="#" class="text-white">Follow on Twitter</a></li>
+                  <li><a href="#" class="text-white">Like on Facebook</a></li>
+                  <li><a href="#" class="text-white">Email me</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="navbar navbar-dark bg-dark box-shadow">
+          <div class="container d-flex justify-content-between">
+            <a href="#" class="navbar-brand d-flex align-items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+              <strong>Linear TV</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          </div>
+        </div>
+      </header>
+  
+      <main role="main">
+  
+        <div class="album py-5 bg-light">
+          <div class="container">
+  
+            <div class="row">
+              <div class="col-md-8">
+                <video id="videojs-linear-tv-prototype-player" class="video-js vjs-16-9 vjs-default-skin" controls muted></video>
+              </div>
+
+              <video id="videojs-duration" class="video-js" style="display: none;" controls muted><source src="https://www.youtube.com/watch?v=-A" type="video/youtube"></video>
+
+              <div class="col-md-4">
+                
+                <ul id="sortable" class="list-group"></ul>
+
+                
+                    <div id="programmes"></div>
+                    <ul id="sortable" class="list-group"></ul>
+                    
+                    <div id="adder" class="mb-3">
+                        <input type="text" name="media" placeholder="media" value="https://www.youtube.com/watch?v=IljVmcDDrOg" /><br />
+                        <input type="text" name="duration" placeholder="duration" /><br />
+                        <input class='add btn btn-primary btn-block' type='submit' value='Submit' />
+                    </div>
+                <button class="generate btn btn-primary btn-block">Generate JSON</button>
+
+              </div>
+              
+          </div>
+        </div>
+  
+      </main>
+      <ul>
+        <li><pre>https://s3b-assets-bucket.s3.amazonaws.com/test-videos/ElephantsDream.mp4</pre></li>
+        <li><pre>https://s3b-assets-bucket.s3.amazonaws.com/test-videos/Sintel.mp4</pre></li>
+        <li><pre>https://s3b-assets-bucket.s3.amazonaws.com/test-videos/TearsOfSteel.mp4</pre></li>
+        <li><pre>https://s3b-assets-bucket.s3.amazonaws.com/test-videos/BigBuckBunny.mp4</pre></li>
+        <li><pre>https://s3b-assets-bucket.s3.amazonaws.com/test-videos/ForBiggerBlazes.mp4</pre></li>
+    </ul>
+
     <ul>
         <li><a href="/test/debug.html">Run unit tests in browser.</a></li>
         <li><a href="docs/api/">Read generated docs.</a></li>
     </ul>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <script src="node_modules/video.js/dist/video.js"></script>
+    <script src="assets/youtube.js"></script>
     <script src="node_modules/moment/moment.js"></script>
     <script src="dist/videojs-linear-tv-prototype.js"></script>
     <script>
@@ -36,43 +108,7 @@
                 return this >= min && this <= max;
             };
 
-            var programs = [{
-                title: 'Elephants Dream',
-                start: moment(new Date("Aug 19, 2021 21:25:00")).unix(),
-                end: moment(new Date("Aug 19, 2021 22:00:00")).unix(),
-                duration: 7208,
-                media: {
-                    type: "video/mp4",
-                    src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/ElephantsDream.mp4"
-                }
-            }, {
-                title: 'Sintel',
-                start: moment(new Date("Aug 19, 2021 09:49:00")).unix() + 7208,
-                end: moment(new Date("Aug 19, 2021 09:49:00")).unix() + 7208 + 7208,
-                duration: 7208,
-                media: {
-                    type: "video/mp4",
-                    src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/Sintel.mp4"
-                }
-            }, {
-                title: 'Tears Of Steel',
-                start: moment(new Date("Aug 19, 2021 20:01:00")).unix(),
-                end: moment(new Date("Aug 19, 2021 20:01:00")).unix() + 634,
-                duration: 634,
-                media: {
-                    type: "application/dash+xml",
-                    src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/TearsOfSteel.mp4"
-                }
-            }, {
-                title: 'Big BuckBunny',
-                start: moment(new Date("Aug 19, 2021 21:05:00")).unix(),
-                end: moment(new Date("Aug 19, 2021 21:05:00")).unix() + 7208,
-                duration: 7208,
-                media: {
-                    type: "video/mp4",
-                    src: "https://s3b-assets-bucket.s3.amazonaws.com/test-videos/BigBuckBunny.mp4"
-                }
-            }];
+            var programs = [];
 
             var adverts = {
                 media: {
@@ -81,11 +117,155 @@
                 }
             };
 
-            var examplePlayer = window.examplePlayer = videojs('videojs-linear-tv-prototype-player');
-            var linearTvPrototype = window.linearTvPrototype = examplePlayer.linearTvPrototype({
+            var examplePlayer = videojs('videojs-linear-tv-prototype-player',{ 
+                techOrder: ['youtube', 'html5']
+            });
+
+            var linearTvPrototype = examplePlayer.linearTvPrototype({
                 'programs': programs,
                 'adverts': adverts
             });
+
+            // Build TV
+            var day = moment().startOf('day').unix();
+            
+            var first_duration, current_duration, updated_time, nextt, nextd;
+            $('#sortable').sortable({
+                start: function(event, ui) {
+                    
+                },
+                change: function(event, ui) {
+                    
+                },
+                update: function(event, ui) {
+                    
+                    updateList();
+
+                }
+            });
+           
+            $('.generate').click(function (e) {
+                e.preventDefault();
+                var json = [];
+                $('#sortable li').each(function( index, element ) {
+
+                    json.push({
+                        start: parseInt($(this).attr('data-start')),
+                        end: parseInt($(this).attr('data-start')) + parseInt($(this).attr('data-duration')),
+                        duration: parseInt($(this).attr('data-duration')),
+                        media: {
+                            src: $(this).attr('data-src'),
+                            type: $(this).attr('data-type')
+                        }
+                    });
+                
+                });
+
+                console.log(json);
+                linearTvPrototype.updateGuide(json);
+    
+            });
+
+            // Test player
+            var durationPlayer = videojs('videojs-duration',{ 
+                techOrder: ['youtube', 'html5']
+            });
+
+            $(".add").click(function (e) {
+                e.preventDefault();
+
+                var src = $("input[name='media']").val();
+
+                var duration = $("input[name='duration']").val();
+
+                if(duration){
+
+                    var $li = $("<li class='ui-state-default list-group-item' data-src='Adverts' data-duration='" + duration + "'/>").text('Adverts - ' + duration);
+                    $("#sortable").append($li);
+                    $("#sortable").sortable('refresh');
+
+                }else{
+
+                    let mime = 'video/mp4';
+                    if(src.includes("youtube")){
+                        mime = 'video/youtube';
+                    }
+
+                    durationPlayer.src({src: src, type: mime});
+      
+                    durationPlayer.play();
+                   
+                }
+
+            });
+
+            durationPlayer.on('loadedmetadata', function (event) {
+
+                if (this.hasOwnProperty("tech_")) {
+                    if (this.tech_.hasOwnProperty("ytDuration")) {
+                        this.duration(this.tech_.ytDuration);
+                    }
+                }
+                this.pause();
+
+                var $li = $("<li class='ui-state-default list-group-item' data-src='" + this.currentSource().src + "' data-type='" + this.currentSource().type + "' data-duration='" + this.duration() + "'/>").text(this.currentSource().src + ' - ' + this.duration());
+                $("#sortable").append($li);
+                updateList();
+
+            });
+
+            function updateList(){
+
+                //$('#sortable li').first().data( 'time', day );
+                $('#sortable li').each(function( index, element ) {
+
+                if(index === 0){
+                    first_duration = parseInt($(this).attr('data-duration'));
+                    $(this).attr('data-start', day);
+                    $(this).html(
+                        'Src: ' + $(this).attr('data-src') +
+                        '<br>Starts: ' + moment.unix(day).format("MM/DD/YYYY HH:mm:ss") +
+                        '<br>End: ' + moment.unix(day+first_duration).format("MM/DD/YYYY HH:mm:ss") +
+                        '<br>Duration: ' + first_duration
+                    );
+
+                }else{
+                    // second
+                    nextt = parseInt($(this).prev().attr('data-start'));
+
+                    nextd = parseInt($(this).prev().attr('data-duration'));
+
+                    current_duration = parseInt($(this).attr('data-duration'));
+
+                    updated_time = (nextt+nextd);
+
+                    $(this).attr('data-start', updated_time);
+                    
+                    $(this).html(
+                        'Src: ' + $(this).attr('data-src') +
+                        '<br>Starts: ' + moment.unix(updated_time).format("MM/DD/YYYY HH:mm:ss") +
+                        '<br>End: ' + moment.unix(updated_time+current_duration).format("MM/DD/YYYY HH:mm:ss") +
+                        '<br>Duration: ' + current_duration
+                    );
+
+                }
+
+                });
+
+                $("#sortable").sortable('refresh');
+
+            }
+// Create the event
+var event = new CustomEvent("name-of-event", { "detail": "Example of an event" });
+
+            // Add an event listener
+document.addEventListener("name-of-event", function(e) {
+  console.log(e.detail); // Prints "Example of an event"
+});
+setTimeout(function(){
+    document.dispatchEvent(event);
+},3000);
+
         }(window, window.videojs));
     </script>
 </body>

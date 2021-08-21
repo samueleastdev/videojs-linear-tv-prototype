@@ -2,8 +2,8 @@
   "name": "videojs-linear-tv-prototype",
   "version": "0.0.0",
   "description": "Prototyping a linear TV flow with video js based on current time",
-  "main": "cjs/plugin.js",
-  "module": "es/plugin.js",
+  "main": "dist/videojs-linear-tv-prototype.cjs.js",
+  "module": "dist/videojs-linear-tv-prototype.es.js",
   "browser": "dist/videojs-linear-tv-prototype.js",
   "generator-videojs-plugin": {
     "version": "8.0.0"
@@ -67,19 +67,13 @@
     "test/"
   ],
   "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run test"
-    }
-  },
-  "lint-staged": {
-    "*.js": "vjsstandard --fix",
-    "README.md": "doctoc --notitle"
+    "hooks": {}
   },
   "dependencies": {
     "global": "^4.4.0",
     "moment": "^2.29.1",
-    "video.js": "^6 || ^7"
+    "video.js": "^6 || ^7",
+    "videojs-youtube": "^2.6.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.16",
