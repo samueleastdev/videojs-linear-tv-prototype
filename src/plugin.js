@@ -1,4 +1,4 @@
-import moment from 'moment';
+
 import videojs from 'video.js';
 import { version as VERSION } from '../package.json';
 

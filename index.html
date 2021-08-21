@@ -255,16 +255,6 @@
                 $("#sortable").sortable('refresh');
 
             }
-// Create the event
-var event = new CustomEvent("name-of-event", { "detail": "Example of an event" });
-
-            // Add an event listener
-document.addEventListener("name-of-event", function(e) {
-  console.log(e.detail); // Prints "Example of an event"
-});
-setTimeout(function(){
-    document.dispatchEvent(event);
-},3000);
 
         }(window, window.videojs));
     </script>
