@@ -163,25 +163,31 @@ class LinearTvPrototype extends Plugin {
 
   getTrack() {
 
-    const programs = this.options.programs;
+    let self = this;
 
-    const adverts = this.options.adverts;
+    const programs = self.options.programs;
 
-    this.currentTrack = programs.filter(media => (moment().unix().between(media.start, media.end)));
+    const adverts = self.options.adverts;
 
-    if (this.currentTrack.length > 0) {
+    self.currentTrack = programs.filter(media => (moment().unix().between(media.start, media.end)));
 
-      this.player.src(this.currentTrack[0].media);
+    if (self.currentTrack.length > 0) {
 
-      this.player.currentTime(moment().unix() - this.currentTrack[0].start);
+      self.player.src(self.currentTrack[0].media);
 
-      this.player.play();
+      self.player.one('loadedmetadata', function (event) {
+
+        self.player.currentTime(moment().unix() - self.currentTrack[0].start);
+
+      });
+
+      self.player.play();
 
     } else {
 
-      this.player.src(adverts.media);
+      self.player.src(adverts.media);
 
-      this.player.play();
+      self.player.play();
 
     }
 
@@ -189,25 +195,31 @@ class LinearTvPrototype extends Plugin {
 
   updateTrack() {
 
-    const programs = this.options.programs;
+    let self = this;
 
-    const adverts = this.options.adverts;
+    const programs = self.options.programs;
 
-    this.currentTrack = programs.filter(media => (moment().unix().between_equals(media.start, media.end)));
+    const adverts = self.options.adverts;
 
-    if (this.currentTrack.length > 0) {
+    self.currentTrack = programs.filter(media => (moment().unix().between_equals(media.start, media.end)));
 
-      this.player.src(this.currentTrack[0].media);
+    if (self.currentTrack.length > 0) {
 
-      this.player.currentTime(moment().unix() - this.currentTrack[0].start);
+      self.player.src(self.currentTrack[0].media);
 
-      this.player.play();
+      self.player.one('loadedmetadata', function (event) {
+
+        self.player.currentTime(moment().unix() - self.currentTrack[0].start);
+
+      });
+
+      self.player.play();
 
     } else {
 
-      this.player.src(adverts.media);
+      self.player.src(adverts.media);
 
-      this.player.play();
+      self.player.play();
 
     }
 
