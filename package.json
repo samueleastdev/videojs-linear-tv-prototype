@@ -1,10 +1,12 @@
 {
   "name": "videojs-linear-tv-prototype",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Prototyping a linear TV flow with video js based on current time",
   "main": "dist/videojs-linear-tv-prototype.cjs.js",
   "module": "dist/videojs-linear-tv-prototype.es.js",
   "browser": "dist/videojs-linear-tv-prototype.js",
+  "homepage": "https://github.com/samueleastdev/videojs-linear-tv-prototype",
+  "url": "https://github.com/samueleastdev/videojs-linear-tv-prototype/issues",
   "generator-videojs-plugin": {
     "version": "8.0.0"
   },
